@@ -7,6 +7,5 @@ public record NotificationCreatedEvent(
     NotificationType Type,
     string RecipientContact,
     string? Subject,
-    string Content,
-    Dictionary<string, byte[]> Attachments
+    string Content
 );

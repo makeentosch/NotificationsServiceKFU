@@ -11,7 +11,7 @@ var postgres = builder.AddPostgres("postgres")
 
 var notificationsDb = postgres.AddDatabase("postgresNotifications");
 
-var gateway = builder.AddProject<Projects.Gateway_Api>("gateway-api")
+builder.AddProject<Projects.Gateway_Api>("gateway-api")
     .WithReference(notificationsDb)
     .WithReference(rabbitMq)
     .WaitFor(notificationsDb)
@@ -19,11 +19,15 @@ var gateway = builder.AddProject<Projects.Gateway_Api>("gateway-api")
 
 builder.AddProject<Projects.MailService_Api>("mail-service")
     .WithReference(rabbitMq)
-    .WaitFor(rabbitMq);
+    .WaitFor(rabbitMq)
+    .WithEnvironment("MassTransit__RetryLimit", "5")
+    .WithEnvironment("MassTransit__MinIntervalMilliseconds", "1000");
 
 builder.AddProject<Projects.SmsService_Api>("sms-service")
     .WithReference(rabbitMq)
-    .WaitFor(rabbitMq);
+    .WaitFor(rabbitMq)
+    .WithEnvironment("MassTransit__RetryLimit", "1") 
+    .WithEnvironment("MassTransit__MinIntervalMilliseconds", "100");
 
 builder.AddProject<Projects.PushService_Api>("push-service")
     .WithReference(rabbitMq)

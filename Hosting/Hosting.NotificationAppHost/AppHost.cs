@@ -7,6 +7,7 @@ var rabbitMq = builder.AddRabbitMQ("rabbitmq")
 
 var postgres = builder.AddPostgres("postgres")
     .WithDataVolume("postgres-data")
+    .WithArgs("-c", "max_connections=300")
     .WithLifetime(ContainerLifetime.Persistent);
 
 var notificationsDb = postgres.AddDatabase("postgresNotifications");
